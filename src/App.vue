@@ -5,13 +5,20 @@
 
         <button @click="triggerFileInput">Load JSON</button>
         <input type="file" id="fileInput" @change="loadJSON" accept=".json" style="display: none;" />
-
-        <pre v-if="jsonLoaded">{{ Math.random() }}</pre>
+        
+        <div class="tree-viewer">
+            <JsonTreeView
+                v-if="jsonLoaded"
+                :node="jsonContent"
+                :first="true"
+            />
+        </div>
     </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import JsonTreeView from './components/JsonTreeView.vue';
 
 let jsonContent = ''
 let jsonLoaded = ref(false)
@@ -39,3 +46,10 @@ function loadJSON(event)
     reader.readAsText(file)
 }
 </script>
+
+<style>
+.tree-viewer {
+    margin-top: 30px;
+    line-height: 1.75rem;
+}
+</style>
