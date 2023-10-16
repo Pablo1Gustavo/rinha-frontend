@@ -15,7 +15,7 @@
                 style="display: none;"
             />
         </div>
-        <div
+        <main
             v-if="jsonLoaded"
             class="tree-viewer-container"
         >
@@ -26,7 +26,7 @@
                     :first="true"
                 />
             </div>
-        </div>
+        </main>
 </template>
 
 <script setup>
@@ -53,7 +53,9 @@ function loadJSON(event)
     const reader = new FileReader()
     reader.onload = function (event)
     {
-        jsonContent = JSON.parse(event.target.result)
+        jsonContent = Object.freeze(
+            JSON.parse(event.target.result)
+        )
         jsonFileName = file.name
         jsonLoaded.value = true
     }
@@ -64,8 +66,7 @@ function loadJSON(event)
 
 <style>
 .tree-viewer-container {
-    display: flex;
-    justify-content: center;
+    margin-left: 30%;
 }
 
 .tree-viewer {

@@ -1,6 +1,6 @@
 <template v-once>
     <div :class="{ 'json-node': !first }">
-        <div v-if="Array.isArray(node)">
+        <template v-if="Array.isArray(node)">
             <div
                 v-for="(value, index) in node"
                 :key="index"
@@ -15,9 +15,9 @@
                 </span>
                 <JsonTreeView v-else :node="value"/>
             </div>
-        </div>
+        </template>
 
-        <div v-else>
+        <template v-else>
             <div
                 v-for="(value, key) in node"
                 :key="key"
@@ -40,7 +40,7 @@
                 </template>
                 <JsonTreeView v-else :node="value"/>
             </div>
-        </div>
+        </template>
     </div>
 </template>
 
