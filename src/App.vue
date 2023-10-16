@@ -1,30 +1,41 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+    <div>
+        <h1>JSON Tree Viewer</h1>
+        <p>Simple JSON Viewer that runs completely on-client. No data exchange</p>
+
+        <button @click="triggerFileInput">Load JSON</button>
+        <input type="file" id="fileInput" @change="loadJSON" accept=".json" style="display: none;" />
+
+        <pre v-if="jsonLoaded">{{ Math.random() }}</pre>
+    </div>
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+<script setup>
+import { ref } from 'vue';
+
+let jsonContent = ''
+let jsonLoaded = ref(false)
+
+function triggerFileInput()
+{
+    const fileInput = document.getElementById('fileInput');
+    fileInput.click();
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+
+function loadJSON(event)
+{
+    const file = event.target.files[0];
+    if (!file) return;
+
+    jsonLoaded.value = false
+
+    const reader = new FileReader()
+    reader.onload = function (event)
+    {
+        jsonContent = JSON.parse(event.target.result)
+        jsonLoaded.value = true
+    }
+
+    reader.readAsText(file)
 }
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+</script>
