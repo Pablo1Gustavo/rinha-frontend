@@ -1,79 +1,66 @@
 <template>
-        <div
-            v-if="!jsonLoaded"
-            class="home"
-        >
-            <h1>JSON Tree Viewer</h1>
-            <p>Simple JSON Viewer that runs completely on-client. No data exchange</p>
+    <div
+        v-if="!jsonLoaded"
+        class="home"
+    >
+        <h1>JSON Tree Viewer</h1>
+        <p>Simple JSON Viewer that runs completely on-client. No data exchange</p>
 
-            <button @click="triggerFileInput">Load JSON</button>
-            <input
-                type="file"
-                id="fileInput"
-                @change="loadJSON"
-                accept=".json"
-                style="display: none;"
-            />
-        </div>
-        <main
-            v-if="jsonLoaded"
-            class="tree-viewer-container"
-        >
-            <div class="tree-viewer">
-                <h1>{{ jsonFileName }}</h1>
-                <JsonTreeView
-                    :node="jsonContent"
-                    :first="true"
-                />
-            </div>
-        </main>
+        <button @click="triggerFileInput">Load JSON</button>
+        <input
+            type="file"
+            id="fileInput"
+            @change="loadJSON"
+            accept=".json"
+            style="display: none;"
+        />
+    </div>
+    <JsonTreeView
+        v-else
+        :nodes="jsonNodes"
+        :file-name="jsonFileName"
+    />
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import JsonTreeView from './components/JsonTreeView.vue';
+import { convertJsonToNodes } from './utils/json'
 
-let jsonContent = ''
+let jsonNodes = []
 let jsonFileName = ''
 let jsonLoaded = ref(false)
 
 function triggerFileInput()
 {
-    const fileInput = document.getElementById('fileInput');
-    fileInput.click();
+const fileInput = document.getElementById('fileInput');
+fileInput.click();
 }
 
 function loadJSON(event)
 {
-    const file = event.target.files[0];
-    if (!file) return;
+const start = Date.now()
+const file = event.target.files[0];
+if (!file) return;
 
-    jsonLoaded.value = false
+jsonLoaded.value = false
 
-    const reader = new FileReader()
-    reader.onload = function (event)
-    {
-        jsonContent = Object.freeze(
-            JSON.parse(event.target.result)
-        )
-        jsonFileName = file.name
-        jsonLoaded.value = true
-    }
+const reader = new FileReader()
+reader.onload = function (event)
+{
+    jsonNodes = convertJsonToNodes(JSON.parse(event.target.result))
+    jsonFileName = file.name
+    jsonLoaded.value = true
 
-    reader.readAsText(file)
+    const end = Date.now()
+    console.log(end - start, 'ms')
+}
+
+reader.readAsText(file)
 }
 </script>
 
 <style>
-.tree-viewer-container {
-    margin-left: 30%;
-}
-
-.tree-viewer {
-    margin-top: 30px;
-    line-height: 1.75rem;
-}
-
 .home {
     position: absolute;
     top: 45%;
