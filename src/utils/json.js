@@ -22,6 +22,12 @@ export function convertJsonToNodes(object)
         if (isObject)
         {
             const keys = Object.keys(value);
+
+            if (Array.isArray(value)) stack.push({
+                key: ']',
+                depth: depth
+            })
+
             for (let i = keys.length - 1; i >= 0; i--)
             {
                 stack.push({
