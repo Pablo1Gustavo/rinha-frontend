@@ -6,6 +6,11 @@
         <h1>JSON Tree Viewer</h1>
         <p>Simple JSON Viewer that runs completely on-client. No data exchange</p>
 
+        <div v-if="isInvalidJson" class="invalid-json">
+            The provided JSON file is malformed or corrupted.
+            Check the file and try again.
+        </div>
+
         <button @click="triggerFileInput">Load JSON</button>
         <input
             type="file"
@@ -29,7 +34,8 @@ import { convertJsonToNodes } from './utils/json'
 
 let jsonNodes = []
 let jsonFileName = ''
-let jsonLoaded = ref(false)
+const jsonLoaded = ref(false)
+const isInvalidJson = ref(false)
 
 function triggerFileInput()
 {
@@ -39,7 +45,6 @@ function triggerFileInput()
 
 function loadJSON(event)
 {
-    const start = Date.now()
     const file = event.target.files[0];
     if (!file) return;
 
@@ -48,12 +53,13 @@ function loadJSON(event)
     const reader = new FileReader()
     reader.onload = function (event)
     {
-        jsonNodes = convertJsonToNodes(JSON.parse(event.target.result))
-        jsonFileName = file.name
-        jsonLoaded.value = true
-
-        const end = Date.now()
-        console.log(end - start, 'ms')
+        try {
+            jsonNodes = convertJsonToNodes(JSON.parse(event.target.result))
+            jsonFileName = file.name
+            jsonLoaded.value = true
+        } catch {
+            isInvalidJson.value = true
+        }
     }
 
     reader.readAsText(file)
@@ -74,5 +80,11 @@ function loadJSON(event)
     border: 1px solid black;
     padding: 0.25rem .75rem;
     border-radius: .315rem;
+}
+
+.invalid-json {
+    color: red;
+    font-size: .8rem;
+    margin-bottom: 1rem;
 }
 </style>
