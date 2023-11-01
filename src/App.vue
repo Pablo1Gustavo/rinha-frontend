@@ -33,30 +33,30 @@ let jsonLoaded = ref(false)
 
 function triggerFileInput()
 {
-const fileInput = document.getElementById('fileInput');
-fileInput.click();
+    const fileInput = document.getElementById('fileInput');
+    fileInput.click();
 }
 
 function loadJSON(event)
 {
-const start = Date.now()
-const file = event.target.files[0];
-if (!file) return;
+    const start = Date.now()
+    const file = event.target.files[0];
+    if (!file) return;
 
-jsonLoaded.value = false
+    jsonLoaded.value = false
 
-const reader = new FileReader()
-reader.onload = function (event)
-{
-    jsonNodes = convertJsonToNodes(JSON.parse(event.target.result))
-    jsonFileName = file.name
-    jsonLoaded.value = true
+    const reader = new FileReader()
+    reader.onload = function (event)
+    {
+        jsonNodes = convertJsonToNodes(JSON.parse(event.target.result))
+        jsonFileName = file.name
+        jsonLoaded.value = true
 
-    const end = Date.now()
-    console.log(end - start, 'ms')
-}
+        const end = Date.now()
+        console.log(end - start, 'ms')
+    }
 
-reader.readAsText(file)
+    reader.readAsText(file)
 }
 </script>
 

@@ -7,6 +7,7 @@
                 v-for="{ index, data } in virtualNodeList"
                 class="virtual-list-item"
                 :tabindex="index + 1"
+                :key="index"
             >
                 <span v-for="_ in data.depth" class="json-padding" />
 
